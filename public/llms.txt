@@ -1,0 +1,23 @@
+# Offering Counter
+
+> A free, mobile-first web app that helps church counting teams tally cash
+> offerings by denomination, share a read-only summary via an expiring link
+> (WhatsApp or any messaging app), and export the count as CSV.
+
+## Key facts
+
+- No user accounts, login, or sign-up required — fully anonymous.
+- Supports counting cash by denomination for a given currency (INR at launch).
+- Generates a share link valid for 30 days; the link and its data are then
+  deleted automatically.
+- Share links cannot be browsed or guessed — only someone with the exact
+  link can view a count.
+- Recipients can export the count as a CSV file directly from the share page.
+- Free to use.
+
+## Pages
+
+- / — Landing page with product overview and FAQ.
+- /count — The offering calculator.
+- /faq — Full FAQ.
+- /c/{shareId} — A private, time-limited read-only summary (not indexed).

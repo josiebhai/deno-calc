@@ -1,0 +1,25 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /counts/{shareId} {
+      allow get: if true;
+      allow list: if false;
+
+      allow create: if request.resource.data.keys().hasAll([
+          'currencyCode', 'currencySymbol', 'denominations', 'total', 'createdAt', 'expiresAt'
+        ])
+        && request.resource.data.currencyCode is string
+        && request.resource.data.currencySymbol is string
+        && request.resource.data.denominations is list
+        && request.resource.data.total is number
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.expiresAt is timestamp
+        && request.resource.data.expiresAt > request.resource.data.createdAt
+        && (!('orgName' in request.resource.data) || request.resource.data.orgName == null || request.resource.data.orgName is string)
+        && (!('serviceName' in request.resource.data) || request.resource.data.serviceName == null || request.resource.data.serviceName is string);
+
+      allow update, delete: if false;
+    }
+  }
+}
