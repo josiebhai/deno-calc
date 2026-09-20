@@ -7,7 +7,10 @@ design.
 
 ## Stack
 
-- Next.js (App Router) + TypeScript + Tailwind CSS
+- Next.js (App Router) + TypeScript + Tailwind CSS, fully static-exported
+  (`output: "export"`) — no server rendering or Cloud Functions required.
+  The `/c` share page reads its data client-side from Firestore by ID
+  (`/c?id=<shareId>`), so it never needs a server.
 - Firestore (no Firebase Auth)
 - Firebase Analytics
 
@@ -48,6 +51,8 @@ config lives in GitHub repo secrets, not a local `.env` file.
 1. Create a Firebase service account with the **Firebase Hosting Admin**
    and **Cloud Datastore User** roles (Firebase Console → Project settings →
    Service accounts → Generate new private key), which downloads a JSON key.
+   Since the app is fully static, no Cloud Functions permissions or APIs
+   need to be enabled.
 2. In the GitHub repo, go to Settings → Secrets and variables → Actions,
    and add these repository secrets:
    - `FIREBASE_SERVICE_ACCOUNT` — the full contents of that JSON key file

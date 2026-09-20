@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { FAQ_ITEMS } from "@/lib/faq-content";
-import { SITE_NAME } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: `FAQ — ${SITE_NAME}`,
+  title: "FAQ",
   description:
     "Answers to common questions about Offering Counter: accounts, supported currencies, link expiry, data privacy, CSV export, and pricing.",
   alternates: { canonical: "/faq" },

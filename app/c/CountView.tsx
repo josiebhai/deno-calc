@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { getCount, isExpired } from "@/lib/counts";
 import { downloadCsv } from "@/lib/csv";
 import { track } from "@/lib/analytics";
@@ -19,10 +20,19 @@ function getDaysRemaining(expiresAt: number, loadedAt: number): number {
   return Math.max(0, Math.ceil((expiresAt - loadedAt) / (24 * 60 * 60 * 1000)));
 }
 
-export default function CountView({ shareId }: { shareId: string }) {
-  const [state, setState] = useState<LoadState>({ status: "loading" });
+export default function CountView() {
+  const searchParams = useSearchParams();
+  const shareId = searchParams.get("id");
+  const [state, setState] = useState<LoadState>(
+    shareId ? { status: "loading" } : { status: "not-found" }
+  );
 
   useEffect(() => {
+    if (!shareId) {
+      track({ name: "share_link_viewed", params: { valid: false } });
+      return;
+    }
+
     let cancelled = false;
 
     getCount(shareId)
@@ -76,7 +86,7 @@ export default function CountView({ shareId }: { shareId: string }) {
   }
 
   const { count, loadedAt } = state;
-  const shareUrl = `${SITE_URL}/c/${shareId}`;
+  const shareUrl = `${SITE_URL}/c?id=${shareId}`;
   const daysRemaining = getDaysRemaining(count.expiresAt, loadedAt);
 
   function handleExport() {
