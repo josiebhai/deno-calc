@@ -77,7 +77,7 @@ export default function CountCalculator() {
     }
   }
 
-  const shareUrl = shareId ? `${SITE_URL}/c/${shareId}` : null;
+  const shareUrl = shareId ? `${SITE_URL}/c?id=${shareId}` : null;
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10">
