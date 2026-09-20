@@ -16,6 +16,12 @@ export default function CountCalculator() {
   const [shareId, setShareId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [debugLog, setDebugLog] = useState<string[]>([]);
+
+  function logStep(message: string) {
+    const timestamp = new Date().toISOString().slice(11, 19);
+    setDebugLog((prev) => [...prev, `${timestamp} ${message}`]);
+  }
 
   const currency = getCurrency(currencyCode);
 
@@ -50,8 +56,11 @@ export default function CountCalculator() {
   async function handleGenerateLink() {
     setSaving(true);
     setError(null);
+    setDebugLog([]);
+    logStep(`Starting — currency=${currency.code}, site_url=${SITE_URL}`);
     try {
       const nonZero = denominations.filter((d) => d.qty > 0);
+      logStep(`Writing count to Firestore (${nonZero.length} denominations, total=${total})…`);
       const id = await createCount({
         orgName,
         serviceName,
@@ -60,6 +69,7 @@ export default function CountCalculator() {
         denominations,
         total,
       });
+      logStep(`Firestore write succeeded — shareId=${id}`);
       setShareId(id);
       track({
         name: "share_link_created",
@@ -70,7 +80,10 @@ export default function CountCalculator() {
           has_service_name: serviceName.trim().length > 0,
         },
       });
-    } catch {
+      logStep("Done.");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      logStep(`ERROR: ${message}`);
       setError("Something went wrong generating your link. Please try again.");
     } finally {
       setSaving(false);
@@ -202,10 +215,6 @@ export default function CountCalculator() {
 
           {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 
-          <p className="mt-3 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-800">
-            Debug: NEXT_PUBLIC_SITE_URL = <code>{SITE_URL}</code>
-          </p>
-
           <button
             type="button"
             onClick={handleGenerateLink}
@@ -218,6 +227,12 @@ export default function CountCalculator() {
             After generating a link, that link is where the summary and CSV export live —
             forward it to your treasurer or accountant.
           </p>
+
+          {debugLog.length > 0 && (
+            <pre className="mt-4 overflow-x-auto rounded-md bg-slate-900 p-3 text-xs text-slate-100">
+              {debugLog.join("\n")}
+            </pre>
+          )}
         </>
       )}
     </div>
