@@ -202,6 +202,10 @@ export default function CountCalculator() {
 
           {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 
+          <p className="mt-3 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-800">
+            Debug: NEXT_PUBLIC_SITE_URL = <code>{SITE_URL}</code>
+          </p>
+
           <button
             type="button"
             onClick={handleGenerateLink}
