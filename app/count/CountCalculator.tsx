@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { DEFAULT_CURRENCY_CODE, getCurrency, listCurrencies } from "@/lib/currencies";
 import { createCount } from "@/lib/counts";
+import { getFirebaseConfigSummary } from "@/lib/firebase";
 import { track } from "@/lib/analytics";
 import { SHARE_LINK_EXPIRY_DAYS, SITE_URL } from "@/lib/config";
 import ShareButtons from "@/components/ShareButtons";
@@ -58,17 +59,27 @@ export default function CountCalculator() {
     setError(null);
     setDebugLog([]);
     logStep(`Starting — currency=${currency.code}, site_url=${SITE_URL}`);
+    logStep(`Firebase config: ${getFirebaseConfigSummary()}`);
     try {
       const nonZero = denominations.filter((d) => d.qty > 0);
       logStep(`Writing count to Firestore (${nonZero.length} denominations, total=${total})…`);
-      const id = await createCount({
-        orgName,
-        serviceName,
-        currencyCode: currency.code,
-        currencySymbol: currency.symbol,
-        denominations,
-        total,
-      });
+      const timeoutMs = 15000;
+      const id = await Promise.race([
+        createCount({
+          orgName,
+          serviceName,
+          currencyCode: currency.code,
+          currencySymbol: currency.symbol,
+          denominations,
+          total,
+        }),
+        new Promise<never>((_, reject) =>
+          setTimeout(
+            () => reject(new Error(`Timed out after ${timeoutMs / 1000}s waiting for Firestore — likely a network/firewall/ad-blocker issue, or Firestore isn't reachable with this config.`)),
+            timeoutMs
+          )
+        ),
+      ]);
       logStep(`Firestore write succeeded — shareId=${id}`);
       setShareId(id);
       track({

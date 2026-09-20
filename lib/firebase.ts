@@ -16,6 +16,17 @@ export function getFirebaseApp(): FirebaseApp {
   return getApps().length ? getApp() : initializeApp(firebaseConfig);
 }
 
+export function getFirebaseConfigSummary(): string {
+  const mask = (value: string | undefined) =>
+    value ? `${value.slice(0, 4)}…(${value.length} chars)` : "MISSING";
+  return [
+    `projectId=${firebaseConfig.projectId ?? "MISSING"}`,
+    `authDomain=${firebaseConfig.authDomain ?? "MISSING"}`,
+    `apiKey=${mask(firebaseConfig.apiKey)}`,
+    `appId=${mask(firebaseConfig.appId)}`,
+  ].join(" ");
+}
+
 let dbInstance: Firestore | null = null;
 export function getDb(): Firestore {
   if (!dbInstance) {
