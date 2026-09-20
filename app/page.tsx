@@ -77,7 +77,7 @@ export default function HomePage() {
           <div>
             <h2 className="text-2xl font-bold text-slate-900">Denomination entry, built for phones</h2>
             <p className="mt-3 text-slate-600">
-              Enter the quantity for each note value — ₹2000 down to ₹1 — and watch the subtotal
+              Enter the quantity for each note value — ₹500 down to ₹1 — and watch the subtotal
               and grand total update live. When you&apos;re done, generate a share link and send
               it straight to WhatsApp or any messaging app.
             </p>
@@ -90,8 +90,8 @@ export default function HomePage() {
                 <span>Subtotal</span>
               </div>
               {[
-                [2000, 3, 6000],
                 [500, 10, 5000],
+                [200, 5, 1000],
                 [100, 25, 2500],
               ].map(([value, qty, subtotal]) => (
                 <div key={value} className="flex justify-between text-slate-700">
@@ -102,7 +102,7 @@ export default function HomePage() {
               ))}
               <div className="flex justify-between border-t border-slate-200 pt-2 font-semibold text-slate-900">
                 <span>Total</span>
-                <span>₹13,500</span>
+                <span>₹8,500</span>
               </div>
             </div>
           </div>
