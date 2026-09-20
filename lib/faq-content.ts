@@ -19,7 +19,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     question: "What currencies are supported?",
     answer:
-      "Indian Rupee (INR) is supported today, with denominations from ₹1 to ₹2000. More currencies are planned — the currency selector is built so new ones can be added easily.",
+      "Indian Rupee (INR) is supported today, with denominations from ₹1 to ₹500. More currencies are planned — the currency selector is built so new ones can be added easily.",
   },
   {
     question: "How long does a share link last, and what happens after it expires?",
